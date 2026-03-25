@@ -183,15 +183,14 @@ def rs_decode(buffer_bytes):
 PY_WIN_DEFAULTS = set(["C:\\Python27", "C:\\Python27-x64"])
 
 # default local/user paths Windows platforms
-PY_WIN_LOCAL_DEFAULTS = set()
+PY_WIN_LOCAL_DEFAULTS = set(["%LOCALAPPDATA%\\Python"])
 
-PY3_RELEASES = ["37", "38", "39", "310"]
+PY3_RELEASES = ["310", "312", "313", "314"]
 
 for py_rel in PY3_RELEASES:
     PY_WIN_DEFAULTS.add("C:\\Program Files\\Python%s" % py_rel)
-    PY_WIN_DEFAULTS.add("C:\\Program Files (x86)\\Python%s-32" % py_rel)
+    PY_WIN_DEFAULTS.add("X:\\tools\\Python%s" % py_rel)
     PY_WIN_LOCAL_DEFAULTS.add("%%LOCALAPPDATA%%\\Programs\\Python\\Python%s" % py_rel)
-    PY_WIN_LOCAL_DEFAULTS.add("%%LOCALAPPDATA%%\\Programs\\Python\\Python%s-32" % py_rel)
 
 
 # default paths Linux/Mac OS X platforms

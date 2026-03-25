@@ -37,6 +37,9 @@ BOOL g_Synchronized = FALSE;
 SOCKET g_Sock = INVALID_SOCKET;
 WSADATA wsaData;
 
+bool operator == (const IN6_ADDR& a, const IN6_ADDR& b) {
+    return memcmp(&a, &b, sizeof(IN6_ADDR)) == 0;
+}
 
 
 #if _NT_TARGET_VERSION_WINXPOR2K3
@@ -190,6 +193,17 @@ TunnelCreate(PCSTR Host, PCSTR Port)
     for(ptr=result; ptr != NULL ;ptr=ptr->ai_next) {
 
         // Create a SOCKET for connecting to server
+        // fix addr Any->localhost
+        if (ptr->ai_family == AF_INET6)
+        {
+            if (((struct sockaddr_in6*)ptr->ai_addr)->sin6_addr == in6addr_any)
+				((struct sockaddr_in6 *)ptr->ai_addr)->sin6_addr = in6addr_loopback;
+        }
+        else if (ptr->ai_family == AF_INET)
+        {
+            if (((struct sockaddr_in*)ptr->ai_addr)->sin_addr.s_addr == INADDR_ANY)
+                ((struct sockaddr_in*)ptr->ai_addr)->sin_addr.s_addr = 0x0100007f;
+        }
         g_Sock = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
         if (g_Sock == INVALID_SOCKET) {
             _plugin_logprintf("[sync] socket failed with error: %ld\n", WSAGetLastError());
